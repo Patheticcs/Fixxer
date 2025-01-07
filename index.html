@@ -9,7 +9,8 @@
     <h1>Welcome to the Webhook Website!</h1>
     <p>Every visit to this page will trigger a webhook to Discord.</p>
     <script>
-        fetch('https://your-backend-server.com/trigger-webhook')
+        // Send a fetch request to trigger the webhook on page load
+        fetch('http://localhost:3000/trigger-webhook')  // Update with your deployed backend URL
             .then(response => response.json())
             .then(data => console.log(data))
             .catch(error => console.error('Error:', error));
