@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .chat-container {
+            width: 400px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        #chatbox {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .user-message {
+            color: blue;
+            text-align: right;
+        }
+        .bot-message {
+            color: green;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>AI Chatbot</h2>
+        <div id="chatbox"></div>
+        <input type="text" id="user-input" placeholder="Type your message..." />
+    </div>
+
+    <script>
+        // Function to send user input to the AI and display the conversation
+        async function sendMessage() {
+            let userInput = document.getElementById("user-input").value;
+            if (userInput.trim() === "") return; // Prevent sending empty messages
+            
+            // Display user's message
+            let chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += `<div class='user-message'>${userInput}</div>`;
+            
+            // Clear the input field
+            document.getElementById("user-input").value = '';
+
+            // Scroll to the bottom of the chatbox
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            // Send the user input to the API (replace with actual API key)
+            let apiResponse = await getAIResponse(userInput);
+
+            // Display AI's response
+            chatbox.innerHTML += `<div class='bot-message'>${apiResponse}</div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        // Function to call the OpenAI API and get the response (frontend only)
+        async function getAIResponse(userMessage) {
+            const apiKey = 'your-openai-api-key'; // Replace with your actual OpenAI API key
+            const response = await fetch('https://api.openai.com/v1/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                },
+                body: JSON.stringify({
+                    model: "gpt-4",
+                    prompt: userMessage,
+                    max_tokens: 150,
+                }),
+            });
+
+            const data = await response.json();
+            return data.choices[0].text.trim(); // Return the AI response
+        }
+
+        // Attach sendMessage function to "Enter" key
+        document.getElementById("user-input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
